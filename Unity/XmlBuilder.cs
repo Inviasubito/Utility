@@ -42,18 +42,27 @@ public class XmlBuilder : MonoBehaviour
 
         // Scrittura del documento XML
         xmlWriter.WriteStartElement("root");
+        
+        //Blocco con controlli di sicurezza (evita attacchi di tipo injection)
         xmlWriter.WriteStartElement("block");
-        xmlWriter.WriteAttributeString("active", "true");
-        xmlWriter.WriteAttributeString("name", "A");
-        xmlWriter.WriteAttributeString("child", "true");
+        
+        //L'attributo "active" viene convertito in stringa in modo sicuro
+        xmlWriter.WriteAttributeString("active", XmlConvert.ToString(true));
+        //L'attributo "name" viene verificato con la funzione XmlConvert.VerifyNCName per garantire che sia valido
+        xmlWriter.WriteAttributeString("name", XmlConvert.VerifyNCName(name));
+        //L'attributo "active" viene convertito in stringa in modo sicuro
+        xmlWriter.WriteAttributeString("child", XmlConvert.ToString(true));
+        
+        //Blocco senza controlli di sicurezza
         xmlWriter.WriteStartElement("elem");
         xmlWriter.WriteAttributeString("name", "B");
         xmlWriter.WriteAttributeString("mode", "both");
         xmlWriter.WriteAttributeString("full", "true");
+        
         xmlWriter.WriteEndElement(); // chiusura di elem
         xmlWriter.WriteEndElement(); // chiusura di block
         xmlWriter.WriteEndElement(); // chiusura di root
-
+        
         // Chiusura dell'oggetto XmlWriter e salvataggio del file XML
         xmlWriter.Close();
     }
